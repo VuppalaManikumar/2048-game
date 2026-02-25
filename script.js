@@ -1,3 +1,62 @@
+// 🔥 FIREBASE IMPORTS (CDN - Required for GitHub Pages)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+// ✅ YOUR FIREBASE CONFIG
+const firebaseConfig = {
+    apiKey: "AIzaSyDDWJPoReIvNaxn85d9voPYxMm5uats0EU",
+    authDomain: "pro-703ce.firebaseapp.com",
+    projectId: "pro-703ce",
+    storageBucket: "pro-703ce.firebasestorage.app",
+    messagingSenderId: "811826144635",
+    appId: "1:811826144635:web:23c27994e99553c97bc9de"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// ================= AUTH FUNCTIONS =================
+
+window.signup = function() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    createUserWithEmailAndPassword(auth, email, password)
+        .then(() => alert("Signup successful!"))
+        .catch(error => alert(error.message));
+};
+
+window.login = function() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    signInWithEmailAndPassword(auth, email, password)
+        .catch(error => alert(error.message));
+};
+
+window.logout = function() {
+    signOut(auth);
+};
+
+onAuthStateChanged(auth, user => {
+    if (user) {
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("gamePage").style.display = "block";
+        createBoard();
+    } else {
+        document.getElementById("gamePage").style.display = "none";
+        document.getElementById("loginPage").style.display = "block";
+    }
+});
+
+// ================= 2048 GAME LOGIC =================
+
 let grid = document.getElementById("grid");
 let scoreDisplay = document.getElementById("score");
 let highScoreDisplay = document.getElementById("highScore");
@@ -43,9 +102,6 @@ function updateBoard() {
     cells.forEach((cell, i) => {
         cell.textContent = board[i] === 0 ? "" : board[i];
         cell.setAttribute("data-value", board[i]);
-
-        cell.classList.add("pop");
-        setTimeout(() => cell.classList.remove("pop"), 100);
     });
 
     scoreDisplay.textContent = "Score: " + score;
@@ -113,32 +169,6 @@ function moveDown() {
     }
 }
 
-document.addEventListener("keydown", e => {
-    handleMove(e.key);
-});
-
-// Swipe support
-let touchStartX = 0;
-let touchStartY = 0;
-
-document.addEventListener("touchstart", e => {
-    touchStartX = e.changedTouches[0].screenX;
-    touchStartY = e.changedTouches[0].screenY;
-});
-
-document.addEventListener("touchend", e => {
-    let dx = e.changedTouches[0].screenX - touchStartX;
-    let dy = e.changedTouches[0].screenY - touchStartY;
-
-    if (Math.abs(dx) > Math.abs(dy)) {
-        if (dx > 0) handleMove("ArrowRight");
-        else handleMove("ArrowLeft");
-    } else {
-        if (dy > 0) handleMove("ArrowDown");
-        else handleMove("ArrowUp");
-    }
-});
-
 function handleMove(direction) {
     if (direction === "ArrowLeft") moveLeft();
     if (direction === "ArrowRight") moveRight();
@@ -148,12 +178,6 @@ function handleMove(direction) {
     updateBoard();
 }
 
-function restartGame() {
-    createBoard();
-}
-
-function toggleDarkMode() {
-    document.body.classList.toggle("dark");
-}
+document.addEventListener("keydown", e => handleMove(e.key));
 
 createBoard();
