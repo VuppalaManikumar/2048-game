@@ -1,4 +1,4 @@
-// 🔥 FIREBASE IMPORTS (CDN - Required for GitHub Pages)
+// FIREBASE CDN IMPORTS (required for GitHub Pages)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
     getAuth,
@@ -8,7 +8,7 @@ import {
     onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-// ✅ YOUR FIREBASE CONFIG
+// YOUR FIREBASE CONFIG
 const firebaseConfig = {
     apiKey: "AIzaSyDDWJPoReIvNaxn85d9voPYxMm5uats0EU",
     authDomain: "pro-703ce.firebaseapp.com",
@@ -21,8 +21,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// ================= AUTH FUNCTIONS =================
-
+// AUTH FUNCTIONS
 window.signup = function() {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -55,15 +54,13 @@ onAuthStateChanged(auth, user => {
     }
 });
 
-// ================= 2048 GAME LOGIC =================
-
+// 2048 GAME LOGIC
 let grid = document.getElementById("grid");
 let scoreDisplay = document.getElementById("score");
 let highScoreDisplay = document.getElementById("highScore");
 
 let score = 0;
 let highScore = localStorage.getItem("highScore") || 0;
-highScoreDisplay.textContent = "High Score: " + highScore;
 
 let cells = [];
 let board = [];
@@ -88,20 +85,14 @@ function createBoard() {
 }
 
 function generate() {
-    let empty = board
-        .map((val, idx) => (val === 0 ? idx : null))
-        .filter(val => val !== null);
-
+    let empty = board.map((val, i) => val === 0 ? i : null).filter(v => v !== null);
     if (empty.length === 0) return;
-
-    let randomIndex = empty[Math.floor(Math.random() * empty.length)];
-    board[randomIndex] = 2;
+    board[empty[Math.floor(Math.random() * empty.length)]] = 2;
 }
 
 function updateBoard() {
     cells.forEach((cell, i) => {
         cell.textContent = board[i] === 0 ? "" : board[i];
-        cell.setAttribute("data-value", board[i]);
     });
 
     scoreDisplay.textContent = "Score: " + score;
@@ -109,8 +100,9 @@ function updateBoard() {
     if (score > highScore) {
         highScore = score;
         localStorage.setItem("highScore", highScore);
-        highScoreDisplay.textContent = "High Score: " + highScore;
     }
+
+    highScoreDisplay.textContent = "High Score: " + highScore;
 }
 
 function slide(row) {
@@ -127,57 +119,39 @@ function slide(row) {
     return row;
 }
 
-function moveLeft() {
+function move(direction) {
     for (let i = 0; i < 4; i++) {
-        let row = board.slice(i * 4, i * 4 + 4);
+        let row;
+        if (direction === "left") row = board.slice(i * 4, i * 4 + 4);
+        if (direction === "right") row = board.slice(i * 4, i * 4 + 4).reverse();
+        if (direction === "up") row = [board[i], board[i + 4], board[i + 8], board[i + 12]];
+        if (direction === "down") row = [board[i], board[i + 4], board[i + 8], board[i + 12]].reverse();
+
         row = slide(row);
+        if (direction === "right" || direction === "down") row.reverse();
+
         for (let j = 0; j < 4; j++) {
-            board[i * 4 + j] = row[j];
+            if (direction === "left" || direction === "right")
+                board[i * 4 + j] = row[j];
+            else
+                board[i + j * 4] = row[j];
         }
     }
-}
-
-function moveRight() {
-    for (let i = 0; i < 4; i++) {
-        let row = board.slice(i * 4, i * 4 + 4).reverse();
-        row = slide(row);
-        row.reverse();
-        for (let j = 0; j < 4; j++) {
-            board[i * 4 + j] = row[j];
-        }
-    }
-}
-
-function moveUp() {
-    for (let i = 0; i < 4; i++) {
-        let col = [board[i], board[i + 4], board[i + 8], board[i + 12]];
-        col = slide(col);
-        for (let j = 0; j < 4; j++) {
-            board[i + j * 4] = col[j];
-        }
-    }
-}
-
-function moveDown() {
-    for (let i = 0; i < 4; i++) {
-        let col = [board[i], board[i + 4], board[i + 8], board[i + 12]].reverse();
-        col = slide(col);
-        col.reverse();
-        for (let j = 0; j < 4; j++) {
-            board[i + j * 4] = col[j];
-        }
-    }
-}
-
-function handleMove(direction) {
-    if (direction === "ArrowLeft") moveLeft();
-    if (direction === "ArrowRight") moveRight();
-    if (direction === "ArrowUp") moveUp();
-    if (direction === "ArrowDown") moveDown();
     generate();
     updateBoard();
 }
 
-document.addEventListener("keydown", e => handleMove(e.key));
+document.addEventListener("keydown", e => {
+    if (e.key === "ArrowLeft") move("left");
+    if (e.key === "ArrowRight") move("right");
+    if (e.key === "ArrowUp") move("up");
+    if (e.key === "ArrowDown") move("down");
+});
 
-createBoard();
+window.restartGame = function() {
+    createBoard();
+};
+
+window.toggleDarkMode = function() {
+    document.body.classList.toggle("dark");
+};
