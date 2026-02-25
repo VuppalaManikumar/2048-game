@@ -1,10 +1,20 @@
 let grid = document.getElementById("grid");
 let scoreDisplay = document.getElementById("score");
+let highScoreDisplay = document.getElementById("highScore");
+
 let score = 0;
+let highScore = localStorage.getItem("highScore") || 0;
+highScoreDisplay.textContent = "High Score: " + highScore;
+
 let cells = [];
 let board = [];
 
 function createBoard() {
+  grid.innerHTML = "";
+  cells = [];
+  board = [];
+  score = 0;
+
   for (let i = 0; i < 16; i++) {
     board[i] = 0;
     let cell = document.createElement("div");
@@ -12,6 +22,7 @@ function createBoard() {
     grid.appendChild(cell);
     cells.push(cell);
   }
+
   generate();
   generate();
   updateBoard();
@@ -33,7 +44,16 @@ function updateBoard() {
     cell.textContent = board[i] === 0 ? "" : board[i];
     cell.setAttribute("data-value", board[i]);
   });
+
   scoreDisplay.textContent = "Score: " + score;
+
+  if (score > highScore) {
+    highScore = score;
+    localStorage.setItem("highScore", highScore);
+    highScoreDisplay.textContent = "High Score: " + highScore;
+  }
+
+  checkGameOver();
 }
 
 function slide(row) {
@@ -73,7 +93,7 @@ function moveRight() {
 
 function moveUp() {
   for (let i = 0; i < 4; i++) {
-    let col = [board[i], board[i + 4], board[i + 8], board[i + 12]];
+    let col = [board[i], board[i+4], board[i+8], board[i+12]];
     col = slide(col);
     for (let j = 0; j < 4; j++) {
       board[i + j * 4] = col[j];
@@ -83,13 +103,23 @@ function moveUp() {
 
 function moveDown() {
   for (let i = 0; i < 4; i++) {
-    let col = [board[i], board[i + 4], board[i + 8], board[i + 12]].reverse();
+    let col = [board[i], board[i+4], board[i+8], board[i+12]].reverse();
     col = slide(col);
     col.reverse();
     for (let j = 0; j < 4; j++) {
       board[i + j * 4] = col[j];
     }
   }
+}
+
+function checkGameOver() {
+  if (!board.includes(0)) {
+    alert("Game Over!");
+  }
+}
+
+function restartGame() {
+  createBoard();
 }
 
 document.addEventListener("keydown", e => {
