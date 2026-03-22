@@ -1,54 +1,73 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>2048 Pro</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>2048 Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <!-- LOGIN PAGE -->
-    <div id="loginPage" class="auth-box">
-        <h2>Login to 2048 Pro</h2>
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="password" placeholder="Password">
-        <button onclick="login()">Login</button>
-        <button onclick="signup()">Sign Up</button>
+  <!-- AUTH PAGE -->
+  <div id="loginPage" class="auth-wrapper">
+    <div class="auth-box">
+      <div class="auth-logo">2048</div>
+      <div class="auth-subtitle">Sign in to save your high score</div>
+      <input type="email" id="email" placeholder="Email address" autocomplete="email">
+      <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+      <button class="btn-primary" onclick="login()">Login</button>
+      <button class="btn-secondary" onclick="signup()">Create Account</button>
+    </div>
+  </div>
+
+  <!-- GAME PAGE -->
+  <div id="gamePage">
+    <div class="top-bar">
+      <div class="game-title">2048</div>
+      <div class="top-actions">
+        <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">☀️</button>
+        <button class="icon-btn" onclick="logout()" title="Logout">⏏️</button>
+      </div>
     </div>
 
-    <!-- GAME PAGE -->
-    <div id="gamePage" style="display:none;">
-        <div class="container">
-
-            <div class="top-bar">
-                <h1>2048 PRO</h1>
-                <div>
-                    <button onclick="toggleDarkMode()">🌙</button>
-                    <button onclick="logout()">Logout</button>
-                </div>
-            </div>
-
-            <div class="score-container">
-                <div id="score">Score: 0</div>
-                <div id="highScore">High Score: 0</div>
-            </div>
-
-            <button class="restart-btn" onclick="restartGame()">Restart</button>
-
-            <div class="grid" id="grid"></div>
-
-        </div>
+    <div class="scores-row">
+      <div class="score-card" id="score">
+        <div class="score-label">Score</div>
+        <div class="score-value" id="scoreVal">0</div>
+      </div>
+      <div class="score-card" id="highScore">
+        <div class="score-label">Best</div>
+        <div class="score-value" id="highScoreVal">0</div>
+      </div>
     </div>
 
-    <script type="module" src="script.js"></script>
-</body>
-<footer style="text-align:center; margin-top:20px;">
+    <button class="restart-btn" onclick="restartGame()">↺ New Game</button>
+
+    <div class="grid-wrapper" style="position:relative;">
+      <div class="grid" id="grid"></div>
+      <div class="game-over-overlay" id="gameOverOverlay">
+        <div class="game-over-title">Game Over</div>
+        <div class="game-over-score" id="gameOverScore"></div>
+        <button class="btn-primary" style="width:160px;" onclick="restartGame()">Play Again</button>
+      </div>
+    </div>
+
+    <!-- Mobile controls -->
+    <div class="touch-controls">
+      <button class="touch-btn up"    onclick="move('up')">▲</button>
+      <button class="touch-btn left"  onclick="move('left')">◀</button>
+      <button class="touch-btn down"  onclick="move('down')">▼</button>
+      <button class="touch-btn right" onclick="move('right')">▶</button>
+    </div>
+  </div>
+
+  <footer>
     <a href="about.html">About</a> |
     <a href="privacy.html">Privacy</a> |
     <a href="terms.html">Terms</a> |
     <a href="contact.html">Contact</a>
-</footer>
+  </footer>
 
+  <script type="module" src="script.js"></script>
+</body>
 </html>

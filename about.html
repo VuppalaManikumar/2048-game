@@ -1,14 +1,26 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>About - 2048 Pro</title>
+  <meta charset="UTF-8">
+  <title>About - 2048 Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@700&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Outfit',sans-serif;background:#0f0e17;color:#fffffe;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px}
+    .card{background:#1a1826;border:1px solid rgba(255,255,255,0.07);border-radius:24px;padding:48px 40px;max-width:520px;width:100%}
+    h1{font-family:'Space Mono',monospace;font-size:28px;background:linear-gradient(135deg,#ff6b35,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:20px}
+    p{color:#a7a9be;line-height:1.7;margin-bottom:12px;font-weight:300}
+    a.back{display:inline-block;margin-top:24px;color:#ff6b35;text-decoration:none;font-weight:600;font-size:14px;letter-spacing:0.5px}
+    a.back:hover{text-decoration:underline}
+  </style>
 </head>
-
 <body>
+  <div class="card">
     <h1>About 2048 Pro</h1>
-    <p>2048 Pro is a premium puzzle game designed to challenge your brain and improve strategic thinking skills.</p>
-    <a href="index.html">Back to Game</a>
+    <p>2048 Pro is a sleek, addictive puzzle game designed to challenge your strategic thinking. Combine tiles to reach 2048 and beyond.</p>
+    <p>Built with Firebase authentication, your high score is saved securely. Supports keyboard arrows, swipe gestures, and on-screen controls.</p>
+    <a class="back" href="index.html">← Back to Game</a>
+  </div>
 </body>
-
 </html>
